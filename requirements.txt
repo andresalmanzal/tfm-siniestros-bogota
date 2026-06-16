@@ -1,0 +1,10 @@
+pandas>=2.0
+   numpy
+   requests
+   pyarrow
+   matplotlib
+   scikit-learn
+   shap
+   geopandas
+   folium
+   streamlit
