@@ -10,6 +10,7 @@ Artefactos necesarios (generados desde el notebook):
 """
 import json
 import math
+from pathlib import Path
 import numpy as np
 import pandas as pd
 import streamlit as st
@@ -21,6 +22,8 @@ from catboost import CatBoostClassifier
 
 st.set_page_config(page_title="Riesgo vial Bogotá", page_icon="🚦", layout="wide")
 
+BASE = Path(__file__).resolve().parent  # carpeta donde está app.py
+
 CLASES = ["Solo daños", "Con heridos", "Con muertos"]
 _boundary = getattr(h3, "cell_to_boundary", None) or h3.h3_to_geo_boundary
 
@@ -29,16 +32,16 @@ _boundary = getattr(h3, "cell_to_boundary", None) or h3.h3_to_geo_boundary
 @st.cache_resource
 def cargar_modelo():
     m = CatBoostClassifier()
-    m.load_model("catboost_gravedad.cbm")
+    m.load_model(str(BASE / "catboost_gravedad.cbm"))
     return m
 
 @st.cache_data
 def cargar_zonas():
-    return pd.read_csv("app_zonas.csv")
+    return pd.read_csv(BASE / "app_zonas.csv")
 
 @st.cache_data
 def cargar_opciones():
-    with open("app_opciones.json", encoding="utf-8") as f:
+    with open(BASE / "app_opciones.json", encoding="utf-8") as f:
         return json.load(f)
 
 try:
