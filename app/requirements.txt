@@ -1,0 +1,8 @@
+streamlit
+catboost
+pandas
+numpy
+folium
+streamlit-folium
+h3
+branca
