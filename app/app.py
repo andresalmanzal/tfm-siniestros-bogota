@@ -55,10 +55,10 @@ except Exception as e:
 
 
 # ------------------ Cabecera ------------------
-st.title("Riesgo de siniestros viales en Bogotá")
+st.title("🚦 Riesgo de siniestros viales en Bogotá")
 st.caption("TFM · Predicción de gravedad y mapa de riesgo · datos 2015–2021 (CC BY 4.0)")
 
-tab_mapa, tab_sim, tab_info = st.tabs(["️ Mapa de riesgo", " Simulador de riesgo", "ℹ️ Acerca de"])
+tab_mapa, tab_sim, tab_info = st.tabs(["🗺️ Mapa de riesgo", "🧪 Simulador de riesgo", "ℹ️ Acerca de"])
 
 
 # ------------------ Tab 1: Mapa ------------------
@@ -67,13 +67,16 @@ with tab_mapa:
     c1, c2 = st.columns([1, 3])
     with c1:
         metrica = st.radio("Colorear por", ["Tasa de fatalidad", "Nº de fatales", "Volumen"], index=0)
-        min_n = st.slider("Mínimo de siniestros por zona", 0, 300, 50, step=10)
-        st.markdown("**Localidades prioritarias** (por nº de fatales):")
-        agg = (ZONAS[ZONAS["n"] >= min_n]
-               .groupby("localidad", as_index=False)
+        nmax = max(int(ZONAS["n"].quantile(0.90)), 100)
+        min_n = st.slider("Mínimo de siniestros por zona (mapa)", 0, nmax, 50, step=10,
+                          help="Oculta en el mapa las zonas con pocos siniestros, donde la tasa es menos fiable.")
+        col_tab = {"Tasa de fatalidad": "tasa_fatal", "Nº de fatales": "n_fatal", "Volumen": "n"}[metrica]
+        etiqueta = {"Tasa de fatalidad": "tasa de fatalidad", "Nº de fatales": "nº de fatales", "Volumen": "volumen"}[metrica]
+        st.markdown(f"**Localidades por {etiqueta}:**")
+        agg = (ZONAS.groupby("localidad", as_index=False)
                .agg(n=("n", "sum"), n_fatal=("n_fatal", "sum")))
         agg["tasa_fatal"] = (agg["n_fatal"] / agg["n"] * 100).round(2)
-        top = agg.sort_values("n_fatal", ascending=False).head(8)
+        top = agg.sort_values(col_tab, ascending=False).head(8)
         st.dataframe(top[["localidad", "n", "n_fatal", "tasa_fatal"]]
                      .rename(columns={"localidad": "Localidad", "n": "Siniestros",
                                       "n_fatal": "Fatales", "tasa_fatal": "Tasa %"}),
