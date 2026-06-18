@@ -58,7 +58,7 @@ except Exception as e:
 st.title("🚦 Riesgo de siniestros viales en Bogotá")
 st.caption("TFM · Predicción de gravedad y mapa de riesgo · datos 2015–2021 (CC BY 4.0)")
 
-tab_mapa, tab_sim, tab_info = st.tabs(["🗺️ Mapa de riesgo", "🧪 Simulador de riesgo", "ℹ️ Acerca de"])
+tab_mapa, tab_sim, tab_info = st.tabs(["️ Mapa de riesgo", " Simulador de riesgo", "ℹ️ Acerca de"])
 
 
 # ------------------ Tab 1: Mapa ------------------
